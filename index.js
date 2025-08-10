@@ -78,6 +78,9 @@ async function run() {
     const usersCollection = client
       .db("Assignment_11_DB")
       .collection("AllUsers");
+      const blogsCollection = client
+      .db("Assignment_11_DB")
+      .collection("Blogs");
 
     // All Books related api start here
     app.post("/books", verifyFirebaseToken, async (req, res) => {
@@ -249,7 +252,7 @@ async function run() {
       }
     });
     // app ALL USERS
-    app.get('user',async(req,res)=>{
+    app.get('/users',async(req,res)=>{
       const result=await usersCollection.find().toArray()
       res.send(result)
     })
