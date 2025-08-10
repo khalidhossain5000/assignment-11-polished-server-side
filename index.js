@@ -78,9 +78,9 @@ async function run() {
     const usersCollection = client
       .db("Assignment_11_DB")
       .collection("AllUsers");
-      const blogsCollection = client
+      const bookReviewCollection = client
       .db("Assignment_11_DB")
-      .collection("Blogs");
+      .collection("BookReview");
 
     // All Books related api start here
     app.post("/books", verifyFirebaseToken, async (req, res) => {
@@ -258,13 +258,18 @@ async function run() {
     })
     //USER RELATED API ENDS HERE
 
-    //BLOGS RELATED API START HERE
-    app.post("/blogs", async (req, res) => {
-      const allBlogs = req.body;
-      const result = await blogsCollection.insertOne(allBlogs);
+    //bookReviewCollection RELATED API START HERE
+    app.post("/add-book-review", async (req, res) => {
+      const bookReview = req.body;
+      const result = await bookReviewCollection.insertOne(bookReview);
       res.send(result);
     });
-    //BLOGS RELATED API ENDS HERE
+
+    app.get('/all-book-review',async(req,res)=>{
+      const result=await bookReviewCollection.find().toArray()
+      res.send(result)
+    })
+    //bookReviewCollection RELATED API ENDS HERE
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
