@@ -218,7 +218,7 @@ async function run() {
 
     //USER RELATED API START HERE 
     app.post('/users',async(req,res)=>{
-      console.log(req.body,"helldgsg");
+     
       const userInfo=req.body;
       const result=await usersCollection.insertOne(userInfo)
       res.send(result)
