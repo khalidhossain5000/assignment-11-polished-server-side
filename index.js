@@ -75,7 +75,7 @@ async function run() {
     const borrowBooksCollections = client
       .db("Assignment_11_DB")
       .collection("BorrowBooks");
-      const usersCollection = client
+    const usersCollection = client
       .db("Assignment_11_DB")
       .collection("AllUsers");
 
@@ -215,28 +215,48 @@ async function run() {
       res.send(result);
     });
 
+    //USER RELATED API START HERE
+    app.post("/users", async (req, res) => {
+      const email = req.body.email;
+      const userExist = await usersCollection.findOne({ email });
+      if (userExist) {
+        return res
+          .status(200)
+          .send({ message: "User already exists", inserted: false });
+      }
+      const userInfo = req.body;
+      const result = await usersCollection.insertOne(userInfo);
+      res.send(result);
+    });
+    app.get("/users/:email/role", async (req, res) => {
+      try {
+        const email = req.params.email;
 
-    //USER RELATED API START HERE 
-    app.post('/users',async(req,res)=>{
-     
-      const userInfo=req.body;
-      const result=await usersCollection.insertOne(userInfo)
-      res.send(result)
+        if (!email) {
+          return res.status(400).send({ message: "Email is required" });
+        }
+
+        const user = await usersCollection.findOne({ email });
+
+        if (!user) {
+          return res.status(404).send({ message: "User not found" });
+        }
+
+        res.send({ role: user.role || "user" });
+      } catch (error) {
+        console.error("Error getting user role:", error);
+        res.status(500).send({ message: "Failed to get role" });
+      }
+    });
+    // app ALL USERS
+    app.get('user',async(req,res)=>{
+      
     })
-   
-    //USER RELATED API ENDS HERE 
-
-
-
-
-
+    //USER RELATED API ENDS HERE
 
     //BLOGS RELATED API START HERE
 
     //BLOGS RELATED API ENDS HERE
-
-
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
