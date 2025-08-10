@@ -259,7 +259,11 @@ async function run() {
     //USER RELATED API ENDS HERE
 
     //BLOGS RELATED API START HERE
-
+    app.post("/blogs", async (req, res) => {
+      const allBlogs = req.body;
+      const result = await blogsCollection.insertOne(allBlogs);
+      res.send(result);
+    });
     //BLOGS RELATED API ENDS HERE
 
     // Send a ping to confirm a successful connection
