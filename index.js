@@ -78,7 +78,7 @@ async function run() {
     const usersCollection = client
       .db("Assignment_11_DB")
       .collection("AllUsers");
-      const bookReviewCollection = client
+    const bookReviewCollection = client
       .db("Assignment_11_DB")
       .collection("BookReview");
 
@@ -252,10 +252,10 @@ async function run() {
       }
     });
     // app ALL USERS
-    app.get('/users',async(req,res)=>{
-      const result=await usersCollection.find().toArray()
-      res.send(result)
-    })
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
     //USER RELATED API ENDS HERE
 
     //bookReviewCollection RELATED API START HERE
@@ -265,10 +265,32 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/all-book-review',async(req,res)=>{
-      const result=await bookReviewCollection.find().toArray()
-      res.send(result)
-    })
+    app.get("/all-book-review", async (req, res) => {
+      const result = await bookReviewCollection.find().toArray();
+      res.send(result);
+    }); // PATCH /reviews/:id/status
+    app.patch("/reviews/:id/status", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+
+        const updateDoc = {
+          $set: { status: "approved" },
+        };
+
+        const result = await bookReviewCollection.updateOne(query, updateDoc);
+
+        if (result.modifiedCount > 0) {
+          res.send({ success: true, message: "Review approved successfully" });
+        } else {
+          res.status(404).send({ success: false, message: "Review not found" });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ success: false, message: "Server error" });
+      }
+    });
+
     //bookReviewCollection RELATED API ENDS HERE
 
     // Send a ping to confirm a successful connection
