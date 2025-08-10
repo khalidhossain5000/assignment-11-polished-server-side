@@ -292,7 +292,18 @@ async function run() {
 
       res.send(result);
     });
+    app.get("/reviews/approved", async (req, res) => {
+      try {
+        const approvedReviews = await bookReviewCollection
+          .find({ status: "approved" })
+          .toArray();
 
+        res.send(approvedReviews);
+      } catch (error) {
+        console.error("Error fetching approved reviews:", error);
+        res.status(500).send({ error: "Internal server error" });
+      }
+    });
     //bookReviewCollection RELATED API ENDS HERE
 
     // Send a ping to confirm a successful connection
