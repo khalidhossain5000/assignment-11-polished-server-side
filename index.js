@@ -304,6 +304,15 @@ async function run() {
         res.status(500).send({ error: "Internal server error" });
       }
     });
+
+
+     app.get("/review-details/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("rev",id);
+      const query = { _id: new ObjectId(id) };
+      const result = await bookReviewCollection.findOne(query)
+      res.send(result);
+    });
     //bookReviewCollection RELATED API ENDS HERE
 
     // Send a ping to confirm a successful connection
