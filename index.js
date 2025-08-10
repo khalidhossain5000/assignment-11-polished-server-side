@@ -269,26 +269,28 @@ async function run() {
       const result = await bookReviewCollection.find().toArray();
       res.send(result);
     }); // PATCH /reviews/:id/status
-    app.patch("/reviews/:id/status", async (req, res) => {
-      try {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
 
-        const updateDoc = {
-          $set: { status: "approved" },
-        };
+    app.patch("/book-review/:id", async (req, res) => {
+      const reviewId = req.params.id;
 
-        const result = await bookReviewCollection.updateOne(query, updateDoc);
+      // NEW: Accepting declineReason from frontend
+      const { status } = req.body;
 
-        if (result.modifiedCount > 0) {
-          res.send({ success: true, message: "Review approved successfully" });
-        } else {
-          res.status(404).send({ success: false, message: "Review not found" });
-        }
-      } catch (error) {
-        console.error(error);
-        res.status(500).send({ success: false, message: "Server error" });
+      // SAME: Still validates 'status'
+      if (!status) {
+        return res.status(400).json({ message: "Status is required" });
       }
+
+      // NEW: Dynamic update object
+      const updateDoc = { status };
+
+      //  SAME: Update article using dynamic updateDoc
+      const result = await bookReviewCollection.updateOne(
+        { _id: new ObjectId(reviewId) },
+        { $set: updateDoc }
+      );
+
+      res.send(result);
     });
 
     //bookReviewCollection RELATED API ENDS HERE
