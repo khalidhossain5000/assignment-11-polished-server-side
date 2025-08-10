@@ -250,7 +250,8 @@ async function run() {
     });
     // app ALL USERS
     app.get('user',async(req,res)=>{
-      
+      const result=await usersCollection.find().toArray
+      res.send(result)
     })
     //USER RELATED API ENDS HERE
 
